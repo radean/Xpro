@@ -2,21 +2,41 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Main</title>
-
+    <title>
+        Main
+    </title>
     <link rel="stylesheet" href="main.css">
-
     <script type="text/montage-serialization">
-        {
-            "owner": {
-                "properties": {
-                    "element": {"#": "main"}
-                }
+    {
+        "owner": {
+            "properties": {
+                "element": {"#": "main"},
+                "contenteditable": "true",
+                "dir": "ltr",
+                "draggable": "true"
+            }
+        },
+        "Show": {
+            "prototype": "montage/ui/button.reel",
+            "properties": {
+                "element": {"#": "Show"},
+                "contenteditable": "true",
+                "dir": "ltr",
+                "draggable": "true",
+                "enabled": true,
+                "formenctype": "application/x-www-form-urlencoded",
+                "formmethod": "get",
+                "formnovalidate": false,
+                "label": "Button",
+                "type": "button"
             }
         }
+    }
     </script>
 </head>
 <body>
-    <div data-montage-id="main" data-montage-skin="light" class="Main"></div>
+    <div data-montage-id="main" data-montage-skin="light" class="Main">
+        <button data-montage-id="Show"></button>
+    </div>
 </body>
 </html>
