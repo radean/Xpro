@@ -1,35 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>xpro</title>
+	<head>
+		<title>learningthree.js boiler plate for three.js</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script src="js/dat.gui.min.js"></script>	
+		<script src="vendor/three.js/Three.js"></script>
+		<script src="vendor/three.js/Detector.js"></script>
+		<!-- https://github.com/mrdoob/stats.js -->
+		<script src="vendor/three.js/Stats.js"></script>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="xpro">
-    <meta name="mobile-web-app-capable" content="yes">
-    
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="assets/images/icons/apple-touch-icon-152x152-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="assets/images/icons/apple-touch-icon-120x120-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="assets/images/icons/apple-touch-icon-76x76-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="assets/images/icons/apple-touch-icon-57x57-precomposed.png">
-    <link rel="shortcut icon" href="assets/images/icons/apple-touch-icon.png">
-    <link rel="shortcut icon" sizes="1024x1024" href="assets/images/icons/icon-1024x1024.png">
-    <link rel="shortcut icon" sizes="128x128" href="assets/images/icons/icon-128x128.png">
-
-    <link rel="stylesheet" href="assets/style/style.css">
-
-    <script src="node_modules/montage/montage.js"></script>
-    <script type="text/montage-serialization">
-    {
-        "owner": {
-            "prototype": "montage/ui/loader.reel"
-        }
-    }
-    </script>
-</head>
+		<script src="vendor/threex/THREEx.screenshot.js"></script>
+		<script src="vendor/threex/THREEx.FullScreen.js"></script>
+		<script src="vendor/threex/THREEx.WindowResize.js"></script>
+		<script src="vendor/three.js/TrackballControls.js"></script>
+		
+		<link  href="css/main.css" rel="stylesheet"/>
+	</head>
 <body>
-    <span class="loading"></span>
+	<!-- three.js container -->
+    <div id="ControlBar" style=" position:absolute;"> 
+            	<input type="button" onClick="setsizeplaner()" value="Change Width" />
+                <input type="number" onChange="updateSizePlaner()" value="1" min="1" max="20"/>
+              <input type="range" id="planeRange" value="2" onChange="updateSizePlaner()" max="14" min="1">
+    </div>
+    <div id="container" style="width: 800px; height: 600px;">
+    </div>
+	<!-- info on screen display -->
+	
+    <div id="viewer3d">
+        <div id="info">
+            <div class="bottom" id="inlineDoc" >
+                - <i>p</i> for screenshot
+            </div> 
+        </div> 
+		<script type="text/javascript">
+            var stats, scene, renderer, composer;
+            var camera, cameraControls;
+    
+            // init the scene
+           if( !init() )	animate();
+
+		// init the scene
+		function init(){
+    			renderer = new THREE.WebGLRenderer({
+                antialias		: true,	// to get smoother output
+                preserveDrawingBuffer	: true	// to allow screensho
+				});
+                renderer.setClearColor( 0x666666 );
+                renderer.setSize(window.innerWidth  , window.innerHeight);
+                document.getElementById('container').appendChild(renderer.domElement);
+				
+    
+                // add Stats.js - https://github.com/mrdoob/stats.js
+                stats = new Stats();
+                stats.domElement.style.position	= 'absolute';
+                stats.domElement.style.bottom	= '0px';
+                document.body.appendChild( stats.domElement );
+    
+                // create a scene
+                scene = new THREE.Scene();
+    
+                // put a camera in the scene
+                camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000 );
+                camera.position.set(0 ,-10 , 8);
+                scene.add(camera);
+    
+                // create a camera contol
+                cameraControls	= new THREE.TrackballControls(camera)
+    
+                // transparently support window resize
+                THREEx.WindowResize.bind(renderer, camera);
+                // allow 'p' to make screenshot
+                THREEx.Screenshot.bindKey(renderer);
+                // allow 'f' to go fullscreen where this feature is supported
+                if( THREEx.FullScreen.available() ){
+                    THREEx.FullScreen.bindKey();		
+                    document.getElementById('inlineDoc').innerHTML	+= "- <i>f</i> for fullscreen";
+                }
+		}
+                // here you add your objects
+                // - you will most likely replace this part by your own
+                var light	= new THREE.AmbientLight( 0x666666 );
+				light.position.set( 20, 20, 60 );
+                scene.add(light);
+                var light	= new THREE.DirectionalLight( 0xffffff );
+              	light.position.set( 20, 20, 60 );
+                scene.add(light);
+				
+				
+				
+				
+				//Adding Axis Informations
+				var axis = new THREE.AxisHelper(6);
+				axis.position.set(0,0,-1);
+				scene.add(axis);
+				
+				
+				
+				
+				
+				
+				
+				//Adding GRID AREA -----------
+				var grid = new THREE.GridHelper(25 ,1);
+				var color = new THREE.Color("rgb(250,0,0)");
+				grid.rotation.x = Math.PI/2;
+				grid.position.set(0,0,-1);
+				grid.setColors(color, 0x000000);
+				
+				scene.add(grid);
+				
+				
+				
+				
+				
+				
+				
+				//Adding Objects
+				
+				
+				
+				
+				
+				//MATERIALS ------
+				var norMaterial	= new THREE.MeshLambertMaterial({ambient: 0x95CAE4, color: 0x95CAE4});
+				var steelMat	= new THREE.MeshLambertMaterial({ambient: 0x333333, color: 0x333333, });
+				norMaterial.transparent = true;
+				norMaterial.opacity = 0.5;				
+				
+				
+				
+				
+				
+				
+				//-------------------Adding Pillars-----------------
+				var pillar	= new THREE.BoxGeometry( 0.2, 0.2, 5 );
+				//-------------------Adding Pillars-----------------
+				var pillarA1	= new THREE.Mesh( pillar, steelMat );
+				pillarA1.position.set(9,3,1.5);
+				var pillarA2	= new THREE.Mesh( pillar, steelMat );
+				pillarA2.position.set(0,3,1.5);
+				var pillarA3	= new THREE.Mesh( pillar, steelMat );
+				pillarA3.position.set(-9,3,1.5);
+				var pillarB1	= new THREE.Mesh( pillar, steelMat );
+				pillarB1.position.set(9,-3,1.5);
+				var pillarB2	= new THREE.Mesh( pillar, steelMat );
+				pillarB2.position.set(0,-3,1.5);
+				var pillarB3	= new THREE.Mesh( pillar, steelMat );
+				pillarB3.position.set(-9,-3,1.5);
+				
+				//-------------------PILLAR FOR 2   -----------------
+				var pillarAA1	= new THREE.Mesh( pillar, steelMat );
+				pillarAA1.position.set(6,3,1.5);
+				var pillarAA2	= new THREE.Mesh( pillar, steelMat );
+				pillarAA2.position.set(-6,3,1.5);
+				var pillarBB1	= new THREE.Mesh( pillar, steelMat );
+				pillarBB1.position.set(6,-3,1.5);
+				var pillarBB2	= new THREE.Mesh( pillar, steelMat );
+				pillarBB2.position.set(-6,-3,1.5);
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				//Adding Miscilenious Objects
+				var geometry	= new THREE.BoxGeometry( 2, 2, 2 );
+				var planeGeo	= new THREE.PlaneGeometry( 6, 6);
+                var cube	= new THREE.Mesh( geometry, norMaterial ); 
+				var plane = new THREE.Mesh(planeGeo, norMaterial);
+				
+				//Placements
+				
+				plane.position.set( 0,0,-1);
+				plane.scale.set(1,1,1);
+				
+				//Shadows
+				cube.castShadow = true;
+				
+				plane.receiveShadow = true;
+				
+				
+				scene.add(plane);
+                scene.add(cube);
+				
+            
+			//Certain Functions
+			
+			function setsizeplaner() {
+				plane.scale.setX(3);
+				if(plane.scale.x == 3){
+					scene.add(pillarA1);
+					scene.add(pillarA2);
+					scene.add(pillarA3);
+					scene.add(pillarB1);
+					scene.add(pillarB2);
+					scene.add(pillarB3);
+				}else if (plane.scale.x == 2){
+					scene.add(pillarAA1);
+					scene.add(pillarAA2);
+					scene.add(pillarBB1);
+					scene.add(pillarBB2);
+				}
+			}
+		    function updateSizePlaner(){
+				var range = document.getElementById("planeRange").value;
+				plane.scale.setX(range);
+			}
+    
+            // animation loop
+            function animate() {
+    			
+                // loop on request animation loop
+                // - it has to be at the begining of the function
+                // - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+                requestAnimationFrame( animate );
+    
+                // do the render
+                render();
+    
+                // update stats
+                stats.update();
+            }
+    
+            // render the scene
+            function render() {
+                // variable which is increase by Math.PI every seconds - usefull for animation
+                var PIseconds	= Date.now() * Math.PI;
+    
+                // update camera controls
+                cameraControls.update();
+				
+                // actually render the scene
+                renderer.render( scene, camera );
+            }
+        </script>
+    </div><input type="button" onClick="setsizeplaner()" value="Change Width" />
 </body>
 </html>
